@@ -1,6 +1,4 @@
 //TODO: set Title text if given
-//TODO: apply button styles
-//TODO: update button styles depending on state
 //TODO: apply font
 //TODO: simplify by reusing media player (opt.)
 //TODO: handle volume settings from options (opt.)
@@ -13,6 +11,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnDismissListener;
 import android.content.res.AssetFileDescriptor;
+import android.graphics.drawable.PictureDrawable;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.media.MediaPlayer.OnErrorListener;
@@ -23,9 +22,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.SurfaceHolder;
 import android.view.View;
-import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.VideoView;
+
+import com.caverock.androidsvg.SVG;
+import com.caverock.androidsvg.SVGParseException;
 
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaArgs;
@@ -46,13 +48,12 @@ public class VideoPlayer extends CordovaPlugin implements OnCompletionListener, 
     private Dialog dialog;
     private VideoView videoView;
     private TextView titleText;
-    private Button closeButton;
-    private Button restartButton;
-    private Button pauseButton;
-    private Button muteButton;
+    private ImageView closeButton;
+    private ImageView restartButton;
+    private ImageView pauseButton;
+    private ImageView muteButton;
     private MediaPlayer player;
 
-    private boolean isPlaying = false;
     private boolean isMuted = false;
 
     /**
@@ -179,6 +180,24 @@ public class VideoPlayer extends CordovaPlugin implements OnCompletionListener, 
 
     private Dialog createDialog(final MediaPlayer mediaPlayer){
 
+        SVG closeSVG = null;
+        SVG pauseSVG = null;
+        SVG playSVG = null;
+        SVG restartSVG = null;
+        SVG speakerOffSVG = null;
+        SVG speakerOnSVG = null;
+
+        try {
+            closeSVG = SVG.getFromResource(cordova.getActivity(), cordova.getActivity().getResources().getIdentifier("close", "raw", cordova.getActivity().getPackageName()));
+            pauseSVG = SVG.getFromResource(cordova.getActivity(), cordova.getActivity().getResources().getIdentifier("pause", "raw", cordova.getActivity().getPackageName()));
+            playSVG = SVG.getFromResource(cordova.getActivity(), cordova.getActivity().getResources().getIdentifier("play", "raw", cordova.getActivity().getPackageName()));
+            restartSVG = SVG.getFromResource(cordova.getActivity(), cordova.getActivity().getResources().getIdentifier("repeat", "raw", cordova.getActivity().getPackageName()));
+            speakerOffSVG = SVG.getFromResource(cordova.getActivity(), cordova.getActivity().getResources().getIdentifier("speakeroff", "raw", cordova.getActivity().getPackageName()));
+            speakerOnSVG = SVG.getFromResource(cordova.getActivity(), cordova.getActivity().getResources().getIdentifier("speakeron", "raw", cordova.getActivity().getPackageName()));
+        } catch (SVGParseException e) {
+            e.printStackTrace();
+        }
+
         int dialogLayout = cordova.getActivity().getResources().getIdentifier("video_player", "layout", cordova.getActivity().getPackageName());
         final Dialog dialog = new Dialog(cordova.getActivity(), android.R.style.Theme_NoTitleBar);
 
@@ -205,13 +224,18 @@ public class VideoPlayer extends CordovaPlugin implements OnCompletionListener, 
         //fetch dialog elements
         videoView = (VideoView)dialog.findViewById(cordova.getActivity().getResources().getIdentifier("video_player", "id", cordova.getActivity().getPackageName()));
         titleText = (TextView) dialog.findViewById(cordova.getActivity().getResources().getIdentifier("header_text", "id", cordova.getActivity().getPackageName()));
-        closeButton = (Button) dialog.findViewById(cordova.getActivity().getResources().getIdentifier("close_button", "id", cordova.getActivity().getPackageName()));
-        restartButton = (Button) dialog.findViewById(cordova.getActivity().getResources().getIdentifier("restart_button", "id", cordova.getActivity().getPackageName()));
-        pauseButton = (Button) dialog.findViewById(cordova.getActivity().getResources().getIdentifier("pause_button", "id", cordova.getActivity().getPackageName()));
-        muteButton = (Button) dialog.findViewById(cordova.getActivity().getResources().getIdentifier("mute_button", "id", cordova.getActivity().getPackageName()));
+        closeButton = (ImageView) dialog.findViewById(cordova.getActivity().getResources().getIdentifier("close_button", "id", cordova.getActivity().getPackageName()));
+        restartButton = (ImageView) dialog.findViewById(cordova.getActivity().getResources().getIdentifier("restart_button", "id", cordova.getActivity().getPackageName()));
+        pauseButton = (ImageView) dialog.findViewById(cordova.getActivity().getResources().getIdentifier("pause_button", "id", cordova.getActivity().getPackageName()));
+        muteButton = (ImageView) dialog.findViewById(cordova.getActivity().getResources().getIdentifier("mute_button", "id", cordova.getActivity().getPackageName()));
 
         //setup display elements
         //TODO: check if any title is given, if so - display it
+
+        setImage(closeButton, closeSVG);
+        setImage(restartButton, restartSVG);
+        setImage(pauseButton, pauseSVG);
+        setImage(muteButton, speakerOnSVG);
 
         closeButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -221,6 +245,12 @@ public class VideoPlayer extends CordovaPlugin implements OnCompletionListener, 
             }
         });
 
+        //copy to final vars
+        final SVG finalPlaySVG = playSVG;
+        final SVG finalPauseSVG = pauseSVG;
+        final SVG finalSpeakerOnSVG = speakerOnSVG;
+        final SVG finalSpeakerOffSVG = speakerOffSVG;
+
         restartButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -228,6 +258,7 @@ public class VideoPlayer extends CordovaPlugin implements OnCompletionListener, 
                 if(!mediaPlayer.isPlaying()){
                     mediaPlayer.start();
                 }
+                setImage(pauseButton, finalPauseSVG);
             }
         });
 
@@ -236,9 +267,11 @@ public class VideoPlayer extends CordovaPlugin implements OnCompletionListener, 
             public void onClick(View v) {
                 if(mediaPlayer.isPlaying()){
                     mediaPlayer.pause();
+                    setImage(pauseButton, finalPlaySVG);
                 }
                 else{
                     mediaPlayer.start();
+                    setImage(pauseButton, finalPauseSVG);
                 }
             }
         });
@@ -249,8 +282,10 @@ public class VideoPlayer extends CordovaPlugin implements OnCompletionListener, 
 
                 if(!isMuted){
                     mediaPlayer.setVolume(0.0f, 0.0f);
+                    setImage(muteButton, finalSpeakerOffSVG);
                 }else{
                     mediaPlayer.setVolume(1.0f, 1.0f);
+                    setImage(muteButton, finalSpeakerOnSVG);
                 }
                 isMuted = !isMuted;
             }
@@ -263,7 +298,6 @@ public class VideoPlayer extends CordovaPlugin implements OnCompletionListener, 
             public void surfaceCreated(SurfaceHolder holder) {
                 mediaPlayer.setDisplay(holder);
 
-                //TODO: move
                 try {
                     mediaPlayer.prepare();
                 } catch (Exception e) {
@@ -282,6 +316,13 @@ public class VideoPlayer extends CordovaPlugin implements OnCompletionListener, 
         });
 
         return dialog;
+    }
+
+    private void setImage(ImageView view, SVG svg){
+        if(null == svg){
+            throw new IllegalArgumentException("SVG must not be null");
+        }
+        view.setImageDrawable(new PictureDrawable(svg.renderToPicture()));
     }
 
     @Override

@@ -25,8 +25,14 @@
 
         <source-file src="src/android/VideoPlayer.java" target-dir="src/com/moust/cordova/videoplayer" />
         <source-file src="misc/resources/layout/video_player.xml" target-dir="res/layout" />
+        <source-file src="misc/resources/raw/close.svg" target-dir="res/raw" />
+        <source-file src="misc/resources/raw/pause.svg" target-dir="res/raw" />
+        <source-file src="misc/resources/raw/play.svg" target-dir="res/raw" />
+        <source-file src="misc/resources/raw/repeat.svg" target-dir="res/raw" />
+        <source-file src="misc/resources/raw/speakeroff.svg" target-dir="res/raw" />
+        <source-file src="misc/resources/raw/speakeroff.svg" target-dir="res/raw" />
 
-        <asset src="assets" target="assets/images" />
+        <!-- TODO: copy lib, check compile settings (build.gradle) -->
 
     </platform>
 
