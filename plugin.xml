@@ -32,7 +32,17 @@
         <source-file src="misc/resources/raw/speakeroff.svg" target-dir="res/raw" />
         <source-file src="misc/resources/raw/speakeroff.svg" target-dir="res/raw" />
 
+
+        <config-file target="res/values/strings.xml" parent="/resources">
+          <string name="restart">Neustart</string>
+          <string name="pause">Pause</string>
+          <string name="play">Abspielen</string>
+          <string name="sound_off">Ton aus</string>
+          <string name="sound_on">Ton an</string>
+        </config-file>
+
         <!-- TODO: copy lib, check compile settings (build.gradle) -->
+        <!-- TODO: right "screen stay on" -->
 
     </platform>
 

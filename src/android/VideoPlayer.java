@@ -48,6 +48,8 @@ public class VideoPlayer extends CordovaPlugin implements OnCompletionListener, 
     private Dialog dialog;
     private VideoView videoView;
     private TextView titleText;
+    private TextView soundText;
+    private TextView pauseText;
     private ImageView closeButton;
     private ImageView restartButton;
     private ImageView pauseButton;
@@ -224,6 +226,8 @@ public class VideoPlayer extends CordovaPlugin implements OnCompletionListener, 
         //fetch dialog elements
         videoView = (VideoView)dialog.findViewById(cordova.getActivity().getResources().getIdentifier("video_player", "id", cordova.getActivity().getPackageName()));
         titleText = (TextView) dialog.findViewById(cordova.getActivity().getResources().getIdentifier("header_text", "id", cordova.getActivity().getPackageName()));
+        soundText = (TextView) dialog.findViewById(cordova.getActivity().getResources().getIdentifier("sound_text", "id", cordova.getActivity().getPackageName()));
+        pauseText = (TextView) dialog.findViewById(cordova.getActivity().getResources().getIdentifier("pause_text", "id", cordova.getActivity().getPackageName()));
         closeButton = (ImageView) dialog.findViewById(cordova.getActivity().getResources().getIdentifier("close_button", "id", cordova.getActivity().getPackageName()));
         restartButton = (ImageView) dialog.findViewById(cordova.getActivity().getResources().getIdentifier("restart_button", "id", cordova.getActivity().getPackageName()));
         pauseButton = (ImageView) dialog.findViewById(cordova.getActivity().getResources().getIdentifier("pause_button", "id", cordova.getActivity().getPackageName()));
@@ -240,7 +244,12 @@ public class VideoPlayer extends CordovaPlugin implements OnCompletionListener, 
         closeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO: shut down media player, dismiss everything
+                if(null != player){
+                    if(player.isPlaying()){
+                        player.stop();
+                    }
+                    player.release();
+                }
                 dialog.dismiss();
             }
         });
@@ -268,10 +277,12 @@ public class VideoPlayer extends CordovaPlugin implements OnCompletionListener, 
                 if(mediaPlayer.isPlaying()){
                     mediaPlayer.pause();
                     setImage(pauseButton, finalPlaySVG);
+                    pauseText.setText(cordova.getActivity().getString(cordova.getActivity().getResources().getIdentifier("play", "string", cordova.getActivity().getPackageName())));
                 }
                 else{
                     mediaPlayer.start();
                     setImage(pauseButton, finalPauseSVG);
+                    pauseText.setText(cordova.getActivity().getString(cordova.getActivity().getResources().getIdentifier("pause", "string", cordova.getActivity().getPackageName())));
                 }
             }
         });
@@ -283,9 +294,12 @@ public class VideoPlayer extends CordovaPlugin implements OnCompletionListener, 
                 if(!isMuted){
                     mediaPlayer.setVolume(0.0f, 0.0f);
                     setImage(muteButton, finalSpeakerOffSVG);
-                }else{
+                    soundText.setText(cordova.getActivity().getString(cordova.getActivity().getResources().getIdentifier("sound_on", "string", cordova.getActivity().getPackageName())));
+                }
+                else{
                     mediaPlayer.setVolume(1.0f, 1.0f);
                     setImage(muteButton, finalSpeakerOnSVG);
+                    soundText.setText(cordova.getActivity().getString(cordova.getActivity().getResources().getIdentifier("sound_off", "string", cordova.getActivity().getPackageName())));
                 }
                 isMuted = !isMuted;
             }

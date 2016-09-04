@@ -25,34 +25,78 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:layout_margin="5dp">
+        android:measureWithLargestChild="true">
 
-        <ImageView
-            android:id="@+id/restart_button"
-            android:layout_height="60dp"
-            android:layout_width="60dp"
-            android:layout_margin="5dp"
-            android:layout_weight="1"
-            android:layout_gravity="center"
-            android:layerType="software" />
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
 
-        <ImageView
-            android:id="@+id/pause_button"
-            android:layout_height="80dp"
-            android:layout_width="80dp"
-            android:layout_margin="5dp"
-            android:layout_weight="1"
-            android:layout_gravity="center_vertical"
-            android:layerType="software" />
+            <ImageView
+                android:id="@+id/restart_button"
+                android:layout_height="50dp"
+                android:layout_width="50dp"
+                android:layout_centerInParent="true"
+                android:layerType="software" />
 
-        <ImageView
-            android:id="@+id/mute_button"
-            android:layout_height="60dp"
-            android:layout_width="60dp"
-            android:layout_margin="5dp"
-            android:layout_weight="1"
-            android:layout_gravity="center"
-            android:layerType="software" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_below="@+id/restart_button"
+                android:singleLine="true"
+                android:layout_centerHorizontal="true"
+                android:gravity="bottom"
+                android:text="@string/restart"/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+
+            <ImageView
+                android:id="@+id/pause_button"
+                android:layout_height="70dp"
+                android:layout_width="70dp"
+                android:layout_centerInParent="true"
+                android:paddingBottom="10dp"
+                android:layerType="software" />
+
+            <TextView
+                android:id="@+id/pause_text"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_below="@+id/pause_button"
+                android:singleLine="true"
+                android:layout_centerHorizontal="true"
+                android:gravity="bottom"
+                android:text="@string/pause" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+            <ImageView
+                android:id="@+id/mute_button"
+                android:layout_height="50dp"
+                android:layout_width="50dp"
+                android:layout_centerInParent="true"
+                android:layerType="software" />
+
+            <TextView
+                android:id="@+id/sound_text"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_below="@+id/mute_button"
+                android:layout_centerHorizontal="true"
+                android:gravity="bottom"
+                android:text="@string/sound_off"/>
+
+        </RelativeLayout>
 
     </LinearLayout>
 
