@@ -24,6 +24,7 @@
         </config-file>
 
         <source-file src="src/android/VideoPlayer.java" target-dir="src/com/moust/cordova/videoplayer" />
+        <source-file src="misc/resources/layout/video_player.xml" target-dir="res/layout" />
 
         <asset src="assets" target="assets/images" />
 

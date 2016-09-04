@@ -1,3 +1,10 @@
+//TODO: set Title text if given
+//TODO: apply button styles
+//TODO: update button styles depending on state
+//TODO: apply font
+//TODO: simplify by reusing media player (opt.)
+//TODO: handle volume settings from options (opt.)
+
 package com.moust.cordova.videoplayer;
 
 import android.annotation.TargetApi;
@@ -6,34 +13,18 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnDismissListener;
 import android.content.res.AssetFileDescriptor;
-import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Rect;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.media.MediaPlayer.OnErrorListener;
 import android.media.MediaPlayer.OnPreparedListener;
 import android.net.Uri;
 import android.os.Build;
-import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.SurfaceHolder;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
-import android.view.WindowManager.LayoutParams;
 import android.widget.Button;
-import android.widget.FrameLayout;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.VideoView;
 
 import org.apache.cordova.CallbackContext;
@@ -44,8 +35,6 @@ import org.apache.cordova.PluginResult;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
-
 public class VideoPlayer extends CordovaPlugin implements OnCompletionListener, OnPreparedListener, OnErrorListener, OnDismissListener {
 
     protected static final String LOG_TAG = "VideoPlayer";
@@ -55,19 +44,22 @@ public class VideoPlayer extends CordovaPlugin implements OnCompletionListener, 
     private CallbackContext callbackContext = null;
 
     private Dialog dialog;
-
     private VideoView videoView;
-
+    private TextView titleText;
     private Button closeButton;
-
+    private Button restartButton;
+    private Button pauseButton;
+    private Button muteButton;
     private MediaPlayer player;
+
+    private boolean isPlaying = false;
+    private boolean isMuted = false;
 
     /**
      * Executes the request and returns PluginResult.
      *
      * @param action        The action to execute.
      * @param args          JSONArray of arguments for the plugin.
-     * @param callbackId    The callback id used when calling back into JavaScript.
      * @return              A PluginResult object with a status and message.
      */
     public boolean execute(String action, CordovaArgs args, CallbackContext callbackContext) throws JSONException {
@@ -77,6 +69,9 @@ public class VideoPlayer extends CordovaPlugin implements OnCompletionListener, 
             CordovaResourceApi resourceApi = webView.getResourceApi();
             String target = args.getString(0);
             final JSONObject options = args.getJSONObject(1);
+
+            //DEBUG
+            target = "file:///android_asset/video/sample_video.mp4";
 
             String fileUriStr;
             try {
@@ -93,7 +88,7 @@ public class VideoPlayer extends CordovaPlugin implements OnCompletionListener, 
             // Create dialog in new thread
             cordova.getActivity().runOnUiThread(new Runnable() {
                 public void run() {
-                    openVideoDialog(path, options);
+                openVideoDialog(path, options);
                 }
             });
 
@@ -130,18 +125,6 @@ public class VideoPlayer extends CordovaPlugin implements OnCompletionListener, 
         return true;
     }
 
-    public int pxToDp(int px) {
-        DisplayMetrics displayMetrics = cordova.getActivity().getResources().getDisplayMetrics();
-        int dp = Math.round(px / (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
-        return dp;
-    }
-
-    public int dpToPx(int dp) {
-        DisplayMetrics displayMetrics = cordova.getActivity().getResources().getDisplayMetrics();
-        int px = Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
-        return px;
-    }
-
     /**
      * Removes the "file://" prefix from the given URI string, if applicable.
      * If the given URI string doesn't have a "file://" prefix, it is returned unchanged.
@@ -158,59 +141,6 @@ public class VideoPlayer extends CordovaPlugin implements OnCompletionListener, 
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     protected void openVideoDialog(String path, JSONObject options) {
-        // Let's create the main dialog
-        dialog = new Dialog(cordova.getActivity(), android.R.style.Theme_NoTitleBar);
-        dialog.getWindow().getAttributes().windowAnimations = android.R.style.Animation_Dialog;
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setCancelable(true);
-        dialog.setOnDismissListener(this);
-
-        // Main container layout
-        RelativeLayout main = new RelativeLayout(cordova.getActivity());
-        main.setLayoutParams(new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-        main.setHorizontalGravity(Gravity.CENTER_HORIZONTAL);
-        main.setVerticalGravity(Gravity.CENTER_VERTICAL);
-
-        videoView = new VideoView(cordova.getActivity());
-        videoView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
-        // videoView.setVideoURI(uri);
-        // videoView.setVideoPath(path);
-        main.addView(videoView);
-
-        //CloseFrame
-        FrameLayout closeFrame = new FrameLayout(cordova.getActivity());
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        params.addRule(RelativeLayout.ALIGN_PARENT_TOP);
-        closeFrame.setLayoutParams(params);
-
-        try {
-            ImageButton closeButton = new ImageButton(cordova.getActivity());
-            RelativeLayout.LayoutParams closeButtonParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            closeButtonParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-            closeButton.setLayoutParams(closeButtonParams);
-            closeButton.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
-            closeButton.setBackground(null);
-            Resources res = cordova.getActivity().getResources();
-            Bitmap bmp = BitmapFactory.decodeStream(res.getAssets().open("www/assets/images/videoclose.png"));
-            Bitmap b = Bitmap.createScaledBitmap(bmp, dpToPx(75), dpToPx(75), true);
-            closeButton.setImageBitmap(b);
-
-            //Drawable d = Drawable.createFromStream(res.getAssets().open("www/assets/images/videoclose.png"), null);
-            //closeButton.setImageDrawable(d);
-
-            closeButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Log.d(LOG_TAG, "closing video from native UI");
-                    endPlayback(null);
-                }
-            });
-            closeFrame.addView(closeButton);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        main.addView(closeFrame);
 
         player = new MediaPlayer();
         player.setOnPreparedListener(this);
@@ -243,47 +173,99 @@ public class VideoPlayer extends CordovaPlugin implements OnCompletionListener, 
             }
         }
 
-        try {
-            float volume = Float.valueOf(options.getString("volume"));
-            Log.d(LOG_TAG, "setVolume: " + volume);
-            player.setVolume(volume, volume);
-        } catch (Exception e) {
-            PluginResult result = new PluginResult(PluginResult.Status.ERROR, e.getLocalizedMessage());
-            result.setKeepCallback(false); // release status callback in JS side
-            callbackContext.sendPluginResult(result);
-            callbackContext = null;
-            return;
-        }
+        dialog = createDialog(player);
+        dialog.show();
+    }
 
-        if(android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
-            try {
-                int scalingMode = options.getInt("scalingMode");
-                switch (scalingMode) {
-                    case MediaPlayer.VIDEO_SCALING_MODE_SCALE_TO_FIT_WITH_CROPPING:
-                        Log.d(LOG_TAG, "setVideoScalingMode VIDEO_SCALING_MODE_SCALE_TO_FIT_WITH_CROPPING");
-                        player.setVideoScalingMode(MediaPlayer.VIDEO_SCALING_MODE_SCALE_TO_FIT_WITH_CROPPING);
-                        break;
-                    default:
-                        Log.d(LOG_TAG, "setVideoScalingMode VIDEO_SCALING_MODE_SCALE_TO_FIT");
-                        player.setVideoScalingMode(MediaPlayer.VIDEO_SCALING_MODE_SCALE_TO_FIT);
-                }
-            } catch (Exception e) {
-                PluginResult result = new PluginResult(PluginResult.Status.ERROR, e.getLocalizedMessage());
-                result.setKeepCallback(false); // release status callback in JS side
-                callbackContext.sendPluginResult(result);
-                callbackContext = null;
-                return;
+    private Dialog createDialog(final MediaPlayer mediaPlayer){
+
+        int dialogLayout = cordova.getActivity().getResources().getIdentifier("video_player", "layout", cordova.getActivity().getPackageName());
+        final Dialog dialog = new Dialog(cordova.getActivity(), android.R.style.Theme_NoTitleBar);
+
+        LayoutInflater inflater = (LayoutInflater)cordova.getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+        //setup dialog
+        dialog.setContentView(inflater.inflate(dialogLayout, null));
+        dialog.setCancelable(true);
+
+        dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                Log.d(LOG_TAG, "Dismiss dialog");
             }
-        }
+        });
+
+        dialog.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface dialog) {
+                Log.d(LOG_TAG, "Show dialog");
+            }
+        });
+
+        //fetch dialog elements
+        videoView = (VideoView)dialog.findViewById(cordova.getActivity().getResources().getIdentifier("video_player", "id", cordova.getActivity().getPackageName()));
+        titleText = (TextView) dialog.findViewById(cordova.getActivity().getResources().getIdentifier("header_text", "id", cordova.getActivity().getPackageName()));
+        closeButton = (Button) dialog.findViewById(cordova.getActivity().getResources().getIdentifier("close_button", "id", cordova.getActivity().getPackageName()));
+        restartButton = (Button) dialog.findViewById(cordova.getActivity().getResources().getIdentifier("restart_button", "id", cordova.getActivity().getPackageName()));
+        pauseButton = (Button) dialog.findViewById(cordova.getActivity().getResources().getIdentifier("pause_button", "id", cordova.getActivity().getPackageName()));
+        muteButton = (Button) dialog.findViewById(cordova.getActivity().getResources().getIdentifier("mute_button", "id", cordova.getActivity().getPackageName()));
+
+        //setup display elements
+        //TODO: check if any title is given, if so - display it
+
+        closeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //TODO: shut down media player, dismiss everything
+                dialog.dismiss();
+            }
+        });
+
+        restartButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mediaPlayer.seekTo(0);
+                if(!mediaPlayer.isPlaying()){
+                    mediaPlayer.start();
+                }
+            }
+        });
+
+        pauseButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(mediaPlayer.isPlaying()){
+                    mediaPlayer.pause();
+                }
+                else{
+                    mediaPlayer.start();
+                }
+            }
+        });
+
+        muteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if(!isMuted){
+                    mediaPlayer.setVolume(0.0f, 0.0f);
+                }else{
+                    mediaPlayer.setVolume(1.0f, 1.0f);
+                }
+                isMuted = !isMuted;
+            }
+        });
 
         final SurfaceHolder mHolder = videoView.getHolder();
         mHolder.setKeepScreenOn(true);
         mHolder.addCallback(new SurfaceHolder.Callback() {
             @Override
             public void surfaceCreated(SurfaceHolder holder) {
-                player.setDisplay(holder);
+                mediaPlayer.setDisplay(holder);
+
+                //TODO: move
                 try {
-                    player.prepare();
+                    mediaPlayer.prepare();
                 } catch (Exception e) {
                     PluginResult result = new PluginResult(PluginResult.Status.ERROR, e.getLocalizedMessage());
                     result.setKeepCallback(false); // release status callback in JS side
@@ -293,20 +275,13 @@ public class VideoPlayer extends CordovaPlugin implements OnCompletionListener, 
             }
             @Override
             public void surfaceDestroyed(SurfaceHolder holder) {
-                player.release();
+                mediaPlayer.release();
             }
             @Override
             public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {}
         });
 
-        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
-        lp.copyFrom(dialog.getWindow().getAttributes());
-        lp.width = WindowManager.LayoutParams.MATCH_PARENT;
-        lp.height = WindowManager.LayoutParams.MATCH_PARENT;
-
-        dialog.setContentView(main);
-        dialog.show();
-        dialog.getWindow().setAttributes(lp);
+        return dialog;
     }
 
     @Override
