@@ -31,7 +31,8 @@
         <source-file src="misc/resources/raw/repeat.svg" target-dir="res/raw" />
         <source-file src="misc/resources/raw/speakeroff.svg" target-dir="res/raw" />
         <source-file src="misc/resources/raw/speakeroff.svg" target-dir="res/raw" />
-
+        <source-file src="misc/libs/androidsvg-1.2.1.jar" target-dir="libs" />
+        <source-file src="misc/fonts/SourceSansPro-Regular.ttf" target-dir="assets/fonts" />
 
         <config-file target="res/values/strings.xml" parent="/resources">
           <string name="restart">Neustart</string>
@@ -41,7 +42,6 @@
           <string name="sound_on">Ton an</string>
         </config-file>
 
-        <!-- TODO: copy lib, check compile settings (build.gradle) -->
         <!-- TODO: right "screen stay on" -->
 
     </platform>

@@ -1,6 +1,5 @@
 //TODO: set Title text if given
-//TODO: apply font
-//TODO: simplify by reusing media player (opt.)
+//TODO: simplify by removing media player (opt.)
 //TODO: handle volume settings from options (opt.)
 
 package com.moust.cordova.videoplayer;
@@ -11,6 +10,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnDismissListener;
 import android.content.res.AssetFileDescriptor;
+import android.graphics.Typeface;
 import android.graphics.drawable.PictureDrawable;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
@@ -49,6 +49,7 @@ public class VideoPlayer extends CordovaPlugin implements OnCompletionListener, 
     private VideoView videoView;
     private TextView titleText;
     private TextView soundText;
+    private TextView restartText;
     private TextView pauseText;
     private ImageView closeButton;
     private ImageView restartButton;
@@ -223,11 +224,19 @@ public class VideoPlayer extends CordovaPlugin implements OnCompletionListener, 
             }
         });
 
+        //fetch font
+        Typeface font = Typeface.createFromAsset(cordova.getActivity().getAssets(), "fonts/SourceSansPro-Regular.ttf");
+
         //fetch dialog elements
         videoView = (VideoView)dialog.findViewById(cordova.getActivity().getResources().getIdentifier("video_player", "id", cordova.getActivity().getPackageName()));
         titleText = (TextView) dialog.findViewById(cordova.getActivity().getResources().getIdentifier("header_text", "id", cordova.getActivity().getPackageName()));
+        titleText.setTypeface(font);
         soundText = (TextView) dialog.findViewById(cordova.getActivity().getResources().getIdentifier("sound_text", "id", cordova.getActivity().getPackageName()));
+        soundText.setTypeface(font);
+        restartText = (TextView) dialog.findViewById(cordova.getActivity().getResources().getIdentifier("restart_text", "id", cordova.getActivity().getPackageName()));
+        restartText.setTypeface(font);
         pauseText = (TextView) dialog.findViewById(cordova.getActivity().getResources().getIdentifier("pause_text", "id", cordova.getActivity().getPackageName()));
+        pauseText.setTypeface(font);
         closeButton = (ImageView) dialog.findViewById(cordova.getActivity().getResources().getIdentifier("close_button", "id", cordova.getActivity().getPackageName()));
         restartButton = (ImageView) dialog.findViewById(cordova.getActivity().getResources().getIdentifier("restart_button", "id", cordova.getActivity().getPackageName()));
         pauseButton = (ImageView) dialog.findViewById(cordova.getActivity().getResources().getIdentifier("pause_button", "id", cordova.getActivity().getPackageName()));
@@ -235,6 +244,7 @@ public class VideoPlayer extends CordovaPlugin implements OnCompletionListener, 
 
         //setup display elements
         //TODO: check if any title is given, if so - display it
+        titleText.setText("ASFSDAF");
 
         setImage(closeButton, closeSVG);
         setImage(restartButton, restartSVG);

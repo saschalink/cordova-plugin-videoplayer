@@ -7,25 +7,37 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <ImageView
-        android:id="@+id/close_button"
-        android:layout_height="30dp"
-        android:layout_width="30dp"
-        android:layout_margin="5dp"
-        android:layout_gravity="top|right"
-        android:layerType="software"/>
-
-    <TextView
-        android:id="@+id/header_text"
-        android:layout_width="wrap_content"
+    <FrameLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="top|center"/>
+        android:layout_gravity="top"
+        android:layout_marginTop="10dp">
+
+        <TextView
+            android:id="@+id/header_text"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:textColor="#000"
+            android:textSize="18dp"
+            android:text="asfdsadffs"/>
+
+        <ImageView
+            android:id="@+id/close_button"
+            android:layout_height="30dp"
+            android:layout_width="30dp"
+            android:layout_margin="10dp"
+            android:layout_gravity="right|center_vertical"
+            android:layerType="software"/>
+
+    </FrameLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:measureWithLargestChild="true">
+        android:measureWithLargestChild="true"
+        android:layout_marginBottom="10dp">
 
         <RelativeLayout
             android:layout_width="wrap_content"
@@ -40,13 +52,16 @@
                 android:layerType="software" />
 
             <TextView
+                android:id="@+id/restart_text"
                 android:layout_width="wrap_content"
                 android:layout_height="40dp"
                 android:layout_below="@+id/restart_button"
                 android:singleLine="true"
                 android:layout_centerHorizontal="true"
                 android:gravity="bottom"
-                android:text="@string/restart"/>
+                android:text="@string/restart"
+                android:textAllCaps="true"
+                android:textSize="18dp"/>
 
         </RelativeLayout>
 
@@ -57,8 +72,8 @@
 
             <ImageView
                 android:id="@+id/pause_button"
-                android:layout_height="70dp"
-                android:layout_width="70dp"
+                android:layout_height="75dp"
+                android:layout_width="75dp"
                 android:layout_centerInParent="true"
                 android:paddingBottom="10dp"
                 android:layerType="software" />
@@ -71,7 +86,9 @@
                 android:singleLine="true"
                 android:layout_centerHorizontal="true"
                 android:gravity="bottom"
-                android:text="@string/pause" />
+                android:text="@string/pause"
+                android:textAllCaps="true"
+                android:textSize="18dp"/>
 
         </RelativeLayout>
 
@@ -94,7 +111,9 @@
                 android:layout_below="@+id/mute_button"
                 android:layout_centerHorizontal="true"
                 android:gravity="bottom"
-                android:text="@string/sound_off"/>
+                android:text="@string/sound_off"
+                android:textAllCaps="true"
+                android:textSize="18dp"/>
 
         </RelativeLayout>
 
