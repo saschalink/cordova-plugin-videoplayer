@@ -1,6 +1,6 @@
-//TODO: set Title text if given
 //TODO: simplify by removing media player (opt.)
 //TODO: handle volume settings from options (opt.)
+//TODO: adapt namespace if rewritten completely
 
 package com.moust.cordova.videoplayer;
 
@@ -74,8 +74,15 @@ public class VideoPlayer extends CordovaPlugin implements OnCompletionListener, 
             String target = args.getString(0);
             final JSONObject options = args.getJSONObject(1);
 
-            //DEBUG
-            target = "file:///android_asset/video/sample_video.mp4";
+            //DEBUG ONLY
+            try {
+                Boolean debugMode = Boolean.valueOf(options.getBoolean("debug"));
+                if(debugMode){
+                    target = "file:///android_asset/video/sample_video.mp4";
+                }
+            } catch (JSONException e) {
+                //Use sample video for debugging. If mode isn't set, continue 'as usual'
+            }
 
             String fileUriStr;
             try {
@@ -177,11 +184,18 @@ public class VideoPlayer extends CordovaPlugin implements OnCompletionListener, 
             }
         }
 
-        dialog = createDialog(player);
+        String title = "";
+        try {
+            title = String.valueOf(options.getString("title"));
+        } catch (JSONException e) {
+            //title is optional, use empty string if not found
+        }
+
+        dialog = createDialog(player, title);
         dialog.show();
     }
 
-    private Dialog createDialog(final MediaPlayer mediaPlayer){
+    private Dialog createDialog(final MediaPlayer mediaPlayer, String title){
 
         SVG closeSVG = null;
         SVG pauseSVG = null;
@@ -230,21 +244,21 @@ public class VideoPlayer extends CordovaPlugin implements OnCompletionListener, 
         //fetch dialog elements
         videoView = (VideoView)dialog.findViewById(cordova.getActivity().getResources().getIdentifier("video_player", "id", cordova.getActivity().getPackageName()));
         titleText = (TextView) dialog.findViewById(cordova.getActivity().getResources().getIdentifier("header_text", "id", cordova.getActivity().getPackageName()));
-        titleText.setTypeface(font);
         soundText = (TextView) dialog.findViewById(cordova.getActivity().getResources().getIdentifier("sound_text", "id", cordova.getActivity().getPackageName()));
-        soundText.setTypeface(font);
         restartText = (TextView) dialog.findViewById(cordova.getActivity().getResources().getIdentifier("restart_text", "id", cordova.getActivity().getPackageName()));
-        restartText.setTypeface(font);
         pauseText = (TextView) dialog.findViewById(cordova.getActivity().getResources().getIdentifier("pause_text", "id", cordova.getActivity().getPackageName()));
-        pauseText.setTypeface(font);
         closeButton = (ImageView) dialog.findViewById(cordova.getActivity().getResources().getIdentifier("close_button", "id", cordova.getActivity().getPackageName()));
         restartButton = (ImageView) dialog.findViewById(cordova.getActivity().getResources().getIdentifier("restart_button", "id", cordova.getActivity().getPackageName()));
         pauseButton = (ImageView) dialog.findViewById(cordova.getActivity().getResources().getIdentifier("pause_button", "id", cordova.getActivity().getPackageName()));
         muteButton = (ImageView) dialog.findViewById(cordova.getActivity().getResources().getIdentifier("mute_button", "id", cordova.getActivity().getPackageName()));
 
         //setup display elements
-        //TODO: check if any title is given, if so - display it
-        titleText.setText("ASFSDAF");
+        titleText.setText(title);
+
+        titleText.setTypeface(font);
+        soundText.setTypeface(font);
+        restartText.setTypeface(font);
+        pauseText.setTypeface(font);
 
         setImage(closeButton, closeSVG);
         setImage(restartButton, restartSVG);

@@ -33,6 +33,7 @@
         <source-file src="misc/resources/raw/speakeroff.svg" target-dir="res/raw" />
         <source-file src="misc/libs/androidsvg-1.2.1.jar" target-dir="libs" />
         <source-file src="misc/fonts/SourceSansPro-Regular.ttf" target-dir="assets/fonts" />
+        <source-file src="misc/sample/sample_video.mp4" target-dir="assets/debug" />
 
         <config-file target="res/values/strings.xml" parent="/resources">
           <string name="restart">Neustart</string>

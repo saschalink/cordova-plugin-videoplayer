@@ -3,13 +3,8 @@ var exec = require("cordova/exec");
 module.exports = {
 
     DEFAULT_OPTIONS: {
-        volume: 1.0,
-        scalingMode: 1
-    },
-
-    SCALING_MODE: {
-        SCALE_TO_FIT: 1,
-        SCALE_TO_FIT_WITH_CROPPING: 2
+        title: '',
+        debug: false
     },
 
     play: function (path, options, successCallback, errorCallback) {
