@@ -24,6 +24,7 @@ import android.view.SurfaceHolder;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.VideoView;
 
 import com.caverock.androidsvg.SVG;
@@ -36,6 +37,8 @@ import org.apache.cordova.CordovaResourceApi;
 import org.apache.cordova.PluginResult;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.File;
 
 public class VideoPlayer extends CordovaPlugin implements OnCompletionListener, OnPreparedListener, OnErrorListener, OnDismissListener {
 
@@ -78,7 +81,7 @@ public class VideoPlayer extends CordovaPlugin implements OnCompletionListener, 
             try {
                 Boolean debugMode = Boolean.valueOf(options.getBoolean("debug"));
                 if(debugMode){
-                    target = "file:///android_asset/video/sample_video.mp4";
+                    target = "file:///android_asset/debug/sample_video.mp4";
                 }
             } catch (JSONException e) {
                 //Use sample video for debugging. If mode isn't set, continue 'as usual'
@@ -95,6 +98,12 @@ public class VideoPlayer extends CordovaPlugin implements OnCompletionListener, 
             Log.v(LOG_TAG, fileUriStr);
 
             final String path = stripFileProtocol(fileUriStr);
+
+            File f = new File(path);
+            if(!f.exists()){
+                Toast.makeText(cordova.getActivity(), "Video-Datei existiert nicht", Toast.LENGTH_SHORT).show();
+                return false;
+            }
 
             // Create dialog in new thread
             cordova.getActivity().runOnUiThread(new Runnable() {
