@@ -23,6 +23,10 @@
             </feature>
         </config-file>
 
+        <config-file target="AndroidManifest.xml" parent="/*">
+            <uses-permission android:name="android.permission.WAKE_LOCK" />
+        </config-file>
+
         <source-file src="src/android/VideoPlayer.java" target-dir="src/com/moust/cordova/videoplayer" />
         <source-file src="misc/resources/layout/video_player.xml" target-dir="res/layout" />
         <source-file src="misc/resources/raw/close.svg" target-dir="res/raw" />

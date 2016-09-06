@@ -24,7 +24,6 @@ import android.view.SurfaceHolder;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.VideoView;
 
 import com.caverock.androidsvg.SVG;
@@ -158,6 +157,7 @@ public class VideoPlayer extends CordovaPlugin implements OnCompletionListener, 
         player.setOnPreparedListener(this);
         player.setOnCompletionListener(this);
         player.setOnErrorListener(this);
+        player.setScreenOnWhilePlaying(true);
 
         if (path.startsWith(ASSETS)) {
             String f = path.substring(15);
