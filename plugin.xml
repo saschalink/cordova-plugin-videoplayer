@@ -23,9 +23,31 @@
             </feature>
         </config-file>
 
-        <source-file src="src/android/VideoPlayer.java" target-dir="src/com/moust/cordova/videoplayer" />
+        <config-file target="AndroidManifest.xml" parent="/*">
+            <uses-permission android:name="android.permission.WAKE_LOCK" />
+        </config-file>
 
-        <asset src="assets" target="assets/images" />
+        <source-file src="src/android/VideoPlayer.java" target-dir="src/com/moust/cordova/videoplayer" />
+        <source-file src="misc/resources/layout/video_player.xml" target-dir="res/layout" />
+        <source-file src="misc/resources/raw/close.svg" target-dir="res/raw" />
+        <source-file src="misc/resources/raw/pause.svg" target-dir="res/raw" />
+        <source-file src="misc/resources/raw/play.svg" target-dir="res/raw" />
+        <source-file src="misc/resources/raw/repeat.svg" target-dir="res/raw" />
+        <source-file src="misc/resources/raw/speakeroff.svg" target-dir="res/raw" />
+        <source-file src="misc/resources/raw/speakeroff.svg" target-dir="res/raw" />
+        <source-file src="misc/libs/androidsvg-1.2.1.jar" target-dir="libs" />
+        <source-file src="misc/fonts/SourceSansPro-Regular.ttf" target-dir="assets/fonts" />
+        <source-file src="misc/sample/sample_video.mp4" target-dir="assets/debug" />
+
+        <config-file target="res/values/strings.xml" parent="/resources">
+          <string name="restart">Neustart</string>
+          <string name="pause">Pause</string>
+          <string name="play">Abspielen</string>
+          <string name="sound_off">Ton aus</string>
+          <string name="sound_on">Ton an</string>
+        </config-file>
+
+        <!-- TODO: right "screen stay on" -->
 
     </platform>
 
