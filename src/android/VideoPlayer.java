@@ -38,8 +38,6 @@ import org.apache.cordova.PluginResult;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.File;
-
 public class VideoPlayer extends CordovaPlugin implements OnCompletionListener, OnPreparedListener, OnErrorListener, OnDismissListener {
 
     protected static final String LOG_TAG = "VideoPlayer";
@@ -98,12 +96,6 @@ public class VideoPlayer extends CordovaPlugin implements OnCompletionListener, 
             Log.v(LOG_TAG, fileUriStr);
 
             final String path = stripFileProtocol(fileUriStr);
-
-            File f = new File(path);
-            if(!f.exists()){
-                Toast.makeText(cordova.getActivity(), "Video-Datei existiert nicht", Toast.LENGTH_SHORT).show();
-                return false;
-            }
 
             // Create dialog in new thread
             cordova.getActivity().runOnUiThread(new Runnable() {
