@@ -1,22 +1,20 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<svg width="58px" height="58px" viewBox="0 0 58 58" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <!-- Generator: Sketch 39 (31667) - http://www.bohemiancoding.com/sketch -->
-    <title>Group 6</title>
-    <desc>Created with Sketch.</desc>
-    <defs>
-        <circle id="path-1" cx="29" cy="29" r="29"></circle>
-        <mask id="mask-2" maskContentUnits="userSpaceOnUse" maskUnits="objectBoundingBox" x="0" y="0" width="58" height="58" fill="white">
-            <use xlink:href="#path-1"></use>
-        </mask>
-    </defs>
-    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g id="Group-6">
-            <g id="Group-8-Copy-2">
-                <use id="Oval-19-Copy" stroke="#292C38" mask="url(#mask-2)" stroke-width="6" fill="#292C38" transform="translate(29.000000, 29.000000) rotate(180.000000) translate(-29.000000, -29.000000) " xlink:href="#path-1"></use>
-                <g id="speaker" transform="translate(18.000000, 19.000000)" fill="#FFFFFF">
-                    <path d="M11,0 L4.4,6.66666667 L0,6.66666667 L0,13.3333333 L4.4,13.3333333 L11,20 L11,0 L11,0 Z M13.2,0.104166667 L13.2,2.32638889 C16.70625,2.84722222 19.4377194,5.71044922 19.765625,9.27083333 C19.7874853,9.50819222 19.8,9.75694444 19.8,10 C19.8,13.8888889 16.94,17.1180556 13.2,17.6736111 L13.2,19.8958333 C18.15,19.3402778 22,15.1111111 22,10 C22,4.88888889 18.15,0.659722222 13.2,0.104166667 L13.2,0.104166667 Z M13.2,4.54861111 L13.2,6.875 C14.52,7.31944444 15.4,8.55555556 15.4,10 C15.4,11.4444444 14.52,12.6805556 13.2,13.125 L13.2,15.4513889 C15.73,14.8958333 17.6,12.6666667 17.6,10 C17.6,7.33333333 15.73,5.10416667 13.2,4.54861111 L13.2,4.54861111 Z" id="Shape"></path>
-                </g>
-            </g>
-        </g>
-    </g>
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 18.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1" id="Ebene_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 width="77px" height="76px" viewBox="0 0 77 76" enable-background="new 0 0 77 76" xml:space="preserve">
+<title>Group 7</title>
+<desc>Created with Sketch.</desc>
+<g id="Page-1_1_">
+	<g id="Group-7">
+		<g id="Group-13-Copy-2">
+			<circle id="Oval-19" fill="#292C38" cx="38.5" cy="38" r="38"/>
+		</g>
+	</g>
+</g>
+<g id="speaker" transform="translate(18.000000, 19.000000)">
+	<path id="Shape_1_" fill="#FFFFFF" d="M20.5,5l-9.2,9.2H5.1v9.4h6.1l9.2,9.4V5L20.5,5z M23.6,5.1v3.1c4.8,0.7,8.7,4.7,9.2,9.7
+		c0,0.3,0,0.7,0,1c0,5.4-4,9.9-9.2,10.7v3.1c7-0.7,12.2-6.7,12.2-13.8S30.4,5.9,23.6,5.1L23.6,5.1z M23.6,11.3v3.3
+		c1.8,0.6,3.1,2.4,3.1,4.4s-1.3,3.7-3.1,4.4v3.3c3.6-0.7,6.1-3.8,6.1-7.7S27,12.1,23.6,11.3L23.6,11.3z"/>
+</g>
 </svg>
