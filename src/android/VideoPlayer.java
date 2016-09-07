@@ -344,6 +344,10 @@ public class VideoPlayer extends CordovaPlugin implements OnCompletionListener, 
                     result.setKeepCallback(false); // release status callback in JS side
                     callbackContext.sendPluginResult(result);
                     callbackContext = null;
+                    mediaPlayer.release();
+                    if(dialog.isShowing()){
+                        dialog.dismiss();
+                    }
                 }
             }
             @Override
